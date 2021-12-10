@@ -1,0 +1,6 @@
+{
+    "name": "custom-plugin-demo",
+    "scripts": {
+        "babelTransform": "node index.js"
+    }
+}
