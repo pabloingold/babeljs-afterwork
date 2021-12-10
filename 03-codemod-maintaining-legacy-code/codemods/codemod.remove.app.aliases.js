@@ -31,20 +31,23 @@ const removeAppAliases = filePaths => {
             },
         });
 
+        let modified = false;
         traverse(ast, {
             StringLiteral: function(currentPath) {
                 if (
                       currentPath.node.value.startsWith('!app/') &&
-                      currentPath.findParent((path) => path.isImportDeclaration())
+                      currentPath.findParent((currentPath) => currentPath.isImportDeclaration())
                 ) {
                     currentPath.replaceWith(t.stringLiteral(pathToRelative(currentPath.node.value, filePath, currentAppPath)));
+                    modified = true;
                 }
             },
         });
 
-        const output = filePath.replace('app', 'outputApp');
-        fse.ensureFileSync(output);
-        fse.writeFileSync(output, print(ast, { quote: 'single', useTabs: false, lineTerminator: '\n' }).code);
+        if(modified) {
+            fse.writeFileSync(filePath, print(ast, { quote: 'single', useTabs: false, lineTerminator: '\n' }).code);
+            modified = false;
+        }
     });
 };
 
