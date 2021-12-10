@@ -1,0 +1,26 @@
+## editors
+.idea
+*.vscode
+*.iml
+*.iws
+
+## logs
+*.log
+
+## system files
+.DS_Store
+
+## npm
+node_modules
+npm-debug.log
+
+## for our builds
+/build/
+dist
+
+## temp folders
+/.tmp
+.config
+
+# tests temp files
+__tempfiles__
