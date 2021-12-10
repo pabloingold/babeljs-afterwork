@@ -18,6 +18,6 @@ traverse(ast, {
 
 // generate code <- ast
 const output = generate(ast, source);
-fs.writeFileSync('script-compiled.js', output.code); // 'const x = 1;'
+fs.writeFileSync('script.js', output.code); // 'const x = 1;'
 
 // npm run babelTransform
