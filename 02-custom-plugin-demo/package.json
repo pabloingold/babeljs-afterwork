@@ -2,5 +2,8 @@
     "name": "custom-plugin-demo",
     "scripts": {
         "babelTransform": "node index.js"
+    },
+    "dependencies": {
+        "@babel/core": "^7.16.0"
     }
 }
