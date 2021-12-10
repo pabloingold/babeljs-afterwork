@@ -24,4 +24,4 @@ async function showAvatar() {
 
 showAvatar();
 
-//npx babel script.js --out-file script-compiled.js
+//npx babel script.js --out-file script.js
