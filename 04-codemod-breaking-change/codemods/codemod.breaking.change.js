@@ -1,4 +1,3 @@
-const path = require('path');
 const fse = require('fs-extra');
 const { parse, print } = require('recast');
 const traverse = require('@babel/traverse').default;
@@ -22,23 +21,26 @@ const removeAppAliases = filePaths => {
             },
         });
 
+        let modified = false;
         traverse(ast, {
-            StringLiteral(path) {
+            StringLiteral(currentPath) {
                 if (
-                  path.node.value.startsWith('<svg') &&
-                  path.findParent((path) => path.isTemplateLiteral()) &&
-                  path.findParent((path) => path.isTemplateLiteral()).findParent((path) => path.isTaggedTemplateExpression()).node.tag.name === 'html'
+                    currentPath.node.value.startsWith('<svg') &&
+                    currentPath.findParent((currentPath) => currentPath.isTemplateLiteral()) &&
+                    currentPath.findParent((currentPath) => currentPath.isTemplateLiteral()).findParent((currentPath) => currentPath.isTaggedTemplateExpression()).node.tag.name === 'html'
                 ) {
-                  const svgLiteral = t.templateLiteral([t.templateElement({cooked:path.node.value, raw:path.node.value}, false)], []);
+                  const svgLiteral = t.templateLiteral([t.templateElement({cooked:currentPath.node.value, raw:currentPath.node.value}, false)], []);
                   const taggedTmplt = t.taggedTemplateExpression(t.identifier('tag'), svgLiteral);
-                  path.replaceWith(t.arrowFunctionExpression([t.identifier('tag')], taggedTmplt));
+                  currentPath.replaceWith(t.arrowFunctionExpression([t.identifier('tag')], taggedTmplt));
+                  modified = true;
                 };
               }
         });
 
-        const output = filePath.replace('src', 'outputSrc');
-        fse.ensureFileSync(output);
-        fse.writeFileSync(output, print(ast, { quote: 'single', useTabs: false, lineTerminator: '\n' }).code);
+        if(modified) {
+            fse.writeFileSync(filePath, print(ast, { quote: 'single', useTabs: false, lineTerminator: '\n' }).code);
+            modified = false;
+        }
     });
 };
 
